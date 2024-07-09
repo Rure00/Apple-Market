@@ -1,4 +1,8 @@
 package com.project.applemarket.data
 
-class Item {
-}
+import android.media.Image
+
+data class Item(
+    val id: Long,
+    var name: String,
+)
