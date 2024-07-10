@@ -1,12 +1,16 @@
 package com.project.applemarket.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
@@ -19,9 +23,16 @@ import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Sample
 import com.project.applemarket.databinding.ActivityMainBinding
 import java.util.Stack
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private val backPressedCallback = object: OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            showBackButtonDialog()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +44,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
 
         //TODO: using drop menu
         val regions = listOf("내배캠동", "스파르타동")
@@ -69,13 +82,28 @@ class MainActivity : AppCompatActivity() {
             }
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
-
-
         }
     }
 
     override fun onResume() {
         super.onResume()
 
+    }
+
+    private fun showBackButtonDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+        builder
+            .setMessage("종료")
+            .setTitle("정말 종료하시겠습니까?")
+            .setPositiveButton("확인") { dialog, which ->
+                finishAffinity()
+                exitProcess(0)
+            }
+            .setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 }
