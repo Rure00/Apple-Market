@@ -104,7 +104,7 @@
         android:textSize="14sp"
         android:lines="1"
 
-        app:drawableStartCompat="@drawable/heart_empty"
+        app:drawableStartCompat="@drawable/heart_selector"
         android:drawablePadding="3dp"
         android:background="@drawable/round_rectangle"
         />

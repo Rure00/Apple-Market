@@ -2,7 +2,9 @@ package com.project.applemarket
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Post
 import com.project.applemarket.databinding.ItemLayoutBinding
 
@@ -42,12 +44,15 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
 
             heart.text = post.interest.toString()
             heart.setOnClickListener {
-                clickListener.onHeartClick()
+                it.isSelected = !it.isSelected
+                clickListener.onHeartClick(it.isSelected, position)
             }
+
             chat.text = post.chatNum.toString()
             chat.setOnClickListener {
                 clickListener.onChatClick()
             }
+
             binding.root.setOnClickListener {
                 clickListener.onPostClick(position)
             }
@@ -58,7 +63,7 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
 
     interface ClickListener {
         fun onPostClick(position: Int)
-        fun onHeartClick()
+        fun onHeartClick(isSelected: Boolean, position: Int)
         fun onChatClick()
     }
 }

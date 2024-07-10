@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
+import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Sample
 import com.project.applemarket.databinding.ActivityMainBinding
 import java.util.Stack
@@ -35,7 +37,10 @@ class MainActivity : AppCompatActivity() {
         //TODO: using drop menu
         val regions = listOf("내배캠동", "스파르타동")
         val arrayAdapter = ArrayAdapter(this, R.layout.drop_down_item, regions)
-        binding.autoCompleteTextView.setAdapter(arrayAdapter)
+        with(binding.autoCompleteTextView) {
+            setText(regions[0])
+            setAdapter(arrayAdapter)
+        }
 
         val postList = Sample.postList
         with(binding.postRv) {
@@ -48,9 +53,13 @@ class MainActivity : AppCompatActivity() {
                         }
                         startActivity(toDetailActivity)
                     }
-                    override fun onHeartClick() {
+                    override fun onHeartClick(isSelected: Boolean, position: Int) {
                         Log.d("PostAdapter", "on Heart Click...")
-
+                        if(isSelected) {
+                            MyData.interests.add(postList[position])
+                        } else {
+                            MyData.interests.remove(postList[position])
+                        }
                     }
                     override fun onChatClick() {
                         Log.d("PostAdapter", "on Chat Click...")
@@ -63,7 +72,10 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
 
     }
 }
