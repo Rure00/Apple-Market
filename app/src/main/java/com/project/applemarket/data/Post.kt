@@ -12,9 +12,8 @@ data class Post(
     var body: String,
     var price: Int,
 
-    val images: MutableList<Image> = mutableListOf(),
-    val createAt: LocalDateTime = LocalDateTime.now()
-) {
-    var interest: Int = 0
+    var interest: Int = 0,
     var chatNum: Int = 0
+) {
+
 }
