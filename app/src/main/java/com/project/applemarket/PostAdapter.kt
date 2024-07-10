@@ -7,13 +7,20 @@ import com.project.applemarket.data.Post
 import com.project.applemarket.databinding.ItemLayoutBinding
 
 class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAdapter.Holder>() {
-    inner class Holder(binding: ItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
+
+    private lateinit var clickListener: ClickListener
+
+    inner class Holder(val binding: ItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
         val title = binding.titleText
         val location = binding.addressText
         val price = binding.priceText
         val image = binding.itemImage
         val heart = binding.heartButton
         val chat = binding.chatButton
+    }
+
+    fun setOnClickListener(listener: ClickListener) {
+        this.clickListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -34,9 +41,24 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
             }.joinToString("").reversed()
 
             heart.text = post.interest.toString()
+            heart.setOnClickListener {
+                clickListener.onHeartClick()
+            }
             chat.text = post.chatNum.toString()
+            chat.setOnClickListener {
+                clickListener.onChatClick()
+            }
+            binding.root.setOnClickListener {
+                clickListener.onPostClick(position)
+            }
         }
     }
 
     override fun getItemCount(): Int = postList.size
+
+    interface ClickListener {
+        fun onPostClick(position: Int)
+        fun onHeartClick()
+        fun onChatClick()
+    }
 }

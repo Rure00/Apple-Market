@@ -1,6 +1,8 @@
 package com.project.applemarket.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
@@ -37,9 +39,29 @@ class MainActivity : AppCompatActivity() {
 
         val postList = Sample.postList
         with(binding.postRv) {
-            adapter = PostAdapter(postList)
+            adapter = PostAdapter(postList).apply {
+                setOnClickListener(object : PostAdapter.ClickListener {
+                    override fun onPostClick(position: Int) {
+                        Log.d("PostAdapter", "on Post Click...")
+                        val toDetailActivity = Intent(this@MainActivity, DetailActivity::class.java).apply {
+                            putExtra("POST", postList[position])
+                        }
+                        startActivity(toDetailActivity)
+                    }
+                    override fun onHeartClick() {
+                        Log.d("PostAdapter", "on Heart Click...")
+
+                    }
+                    override fun onChatClick() {
+                        Log.d("PostAdapter", "on Chat Click...")
+                    }
+
+                })
+            }
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
+
+
         }
 
 
