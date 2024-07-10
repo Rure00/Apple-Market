@@ -2,12 +2,17 @@ package com.project.applemarket.activities
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
+import com.project.applemarket.data.Sample
 import com.project.applemarket.databinding.ActivityMainBinding
 import java.util.Stack
 
@@ -29,5 +34,14 @@ class MainActivity : AppCompatActivity() {
         val regions = listOf("내배캠동", "스파르타동")
         val arrayAdapter = ArrayAdapter(this, R.layout.drop_down_item, regions)
         binding.autoCompleteTextView.setAdapter(arrayAdapter)
+
+        val postList = Sample.postList
+        with(binding.postRv) {
+            adapter = PostAdapter(postList)
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
+        }
+
+
     }
 }
