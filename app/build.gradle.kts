@@ -54,4 +54,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation("com.google.android.material:material:1.2.1")
+    implementation(libs.androidx.core.ktx)
 }

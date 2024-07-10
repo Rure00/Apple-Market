@@ -1,18 +1,26 @@
 package com.project.applemarket.activities
 
-import android.app.Activity
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,13 +28,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
 import com.project.applemarket.data.MyData
+import com.project.applemarket.data.Permission
 import com.project.applemarket.data.Sample
 import com.project.applemarket.databinding.ActivityMainBinding
-import java.util.Stack
 import kotlin.system.exitProcess
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var notificationManager: NotificationManager
+    private val channelId = "0"
 
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -34,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,14 +58,24 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+        val mChannel = NotificationChannel(channelId, "test", NotificationManager.IMPORTANCE_DEFAULT)
+        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(mChannel)
 
-        //TODO: using drop menu
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
+        requestPermissions(Permission.notification, Permission.NOTIFICATION_CODE)
+
+
         val regions = listOf("내배캠동", "스파르타동")
         val arrayAdapter = ArrayAdapter(this, R.layout.drop_down_item, regions)
         with(binding.autoCompleteTextView) {
             setText(regions[0])
             setAdapter(arrayAdapter)
+        }
+
+        binding.notificationButton.setOnClickListener {
+            Log.d("MainActivity", "on Notification Button Clicked...")
+            sendNotification()
         }
 
         val postList = Sample.postList
@@ -105,5 +128,30 @@ class MainActivity : AppCompatActivity() {
 
         val dialog: AlertDialog = builder.create()
         dialog.show()
+    }
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun sendNotification() {
+        val builder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.notification_img)
+            .setContentTitle("알림")
+            .setContentText("알림이 도착했습니다!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        if (ActivityCompat.checkSelfPermission(
+                this@MainActivity,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d("MainActivity: Notification", "Request Permission is Allowed.")
+            notificationManager.notify(channelId, 0, builder.build())
+        } else {
+            Log.d("MainActivity: Notification", "Request Permission is Denied.")
+            Toast.makeText(applicationContext, "권한이 거부되어 있습니다.\n 권한을 허용해주세요.", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", packageName, null)
+            intent.setData(uri)
+            startActivity(intent)
+        }
     }
 }
