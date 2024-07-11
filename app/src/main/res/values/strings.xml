@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Apple Market</string>
     <string name="what_thermal"><u>매너온도</u></string>
+    <string name="won">원</string>
 </resources>

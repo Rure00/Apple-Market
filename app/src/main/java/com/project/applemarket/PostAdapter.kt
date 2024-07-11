@@ -1,5 +1,6 @@
 package com.project.applemarket
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -30,6 +31,7 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
         return Holder(binding)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: Holder, position: Int) {
         with(holder) {
             val post = postList[position]
@@ -40,7 +42,7 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
             price.text = post.price.toString().reversed().mapIndexed { index, it ->
                 if(index % 3 == 2 && index != post.price.toString().lastIndex) "${it},"
                 else it
-            }.joinToString("").reversed()
+            }.joinToString("").reversed() + "원"
 
             with(heart) {
                 text = post.interest.toString()

@@ -15,7 +15,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,13 +30,16 @@ import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
 import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Permission
+import com.project.applemarket.data.Post
 import com.project.applemarket.data.Sample
 import com.project.applemarket.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     private lateinit var notificationManager: NotificationManager
     private val channelId = "0"
@@ -45,11 +49,28 @@ class MainActivity : AppCompatActivity() {
             showBackButtonDialog()
         }
     }
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private val activityResultLauncher = registerForActivityResult(
+        StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+
+            val post = data!!.getParcelableExtra("POST", Post::class.java)
+            val isChanged = data.getBooleanExtra("IsChanged", false)
+            Log.d("MainActivity", "isChanged: $isChanged")
+            if (isChanged) {
+                binding.postRv.adapter!!.notifyItemChanged(postList.indexOf(post))
+            }
+        }
+    }
+
+
+    private val postList = Sample.postList
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -78,18 +99,17 @@ class MainActivity : AppCompatActivity() {
             sendNotification()
         }
 
-        val postList = Sample.postList
+
         with(binding.postRv) {
             adapter = PostAdapter(postList).apply {
-
-
                 setOnClickListener(object : PostAdapter.ClickListener {
                     override fun onPostClick(position: Int) {
                         Log.d("PostAdapter", "on Post Click...")
                         val toDetailActivity = Intent(this@MainActivity, DetailActivity::class.java).apply {
                             putExtra("POST", postList[position])
                         }
-                        startActivity(toDetailActivity)
+
+                        activityResultLauncher.launch(toDetailActivity)
                     }
                     override fun onHeartClick(isSelected: Boolean, position: Int) {
                         Log.d("PostAdapter", "on Heart Click...")
@@ -108,11 +128,6 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        //TODO: add adapter.notifyDataSetChanged()
     }
 
     private fun showBackButtonDialog() {
