@@ -84,7 +84,11 @@ class DetailActivity : AppCompatActivity() {
             chatButton.setOnClickListener {
                 Log.d("DetailActivity", "On Chat Button Clicked...")
             }
+            backButton.setOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
         }
+
     }
 
 
