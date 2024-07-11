@@ -42,11 +42,17 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
                 else it
             }.joinToString("").reversed()
 
-            heart.text = post.interest.toString()
-            heart.setOnClickListener {
-                it.isSelected = !it.isSelected
-                clickListener.onHeartClick(it.isSelected, position)
+            with(heart) {
+                text = post.interest.toString()
+                if(MyData.interests.contains(postList[position])) {
+                    isSelected = true
+                }
+                setOnClickListener {
+                    it.isSelected = !it.isSelected
+                    clickListener.onHeartClick(it.isSelected, position)
+                }
             }
+
 
             chat.text = post.chatNum.toString()
             chat.setOnClickListener {

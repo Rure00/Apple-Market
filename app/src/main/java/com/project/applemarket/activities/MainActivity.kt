@@ -81,6 +81,8 @@ class MainActivity : AppCompatActivity() {
         val postList = Sample.postList
         with(binding.postRv) {
             adapter = PostAdapter(postList).apply {
+
+
                 setOnClickListener(object : PostAdapter.ClickListener {
                     override fun onPostClick(position: Int) {
                         Log.d("PostAdapter", "on Post Click...")
@@ -110,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
+        //TODO: add adapter.notifyDataSetChanged()
     }
 
     private fun showBackButtonDialog() {
