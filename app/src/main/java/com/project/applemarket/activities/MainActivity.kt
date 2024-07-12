@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -22,7 +23,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.view.ScrollingView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity() {
     }
     private val recyclerView: RecyclerView by lazy {
         binding.postRv
+    }
+    private val linearLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(this@MainActivity)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -109,7 +112,6 @@ class MainActivity : AppCompatActivity() {
             recyclerView.smoothScrollToPosition(0)
         }
 
-
         with(recyclerView) {
             adapter = PostAdapter(postList).apply {
                 setOnClickListener(object : PostAdapter.ClickListener {
@@ -135,9 +137,27 @@ class MainActivity : AppCompatActivity() {
 
                 })
             }
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = linearLayoutManager
             addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
+
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val firstVisibleItem: Int = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+
+                    Log.d("MainActivity", "position: $firstVisibleItem")
+
+                    if (firstVisibleItem == 0) {
+                        binding.floatingButton.visibility = View.INVISIBLE
+                    } else {
+                        binding.floatingButton.visibility = View.VISIBLE
+                    }
+                }
+            })
         }
+
+
     }
 
     private fun showBackButtonDialog() {
