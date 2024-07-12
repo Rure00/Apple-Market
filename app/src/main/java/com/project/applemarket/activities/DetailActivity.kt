@@ -15,8 +15,6 @@ import com.project.applemarket.R
 import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Post
 import com.project.applemarket.databinding.ActivityDetailBinding
-import com.project.applemarket.databinding.ActivityMainBinding
-import kotlin.reflect.KClass
 
 class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by lazy {
@@ -24,6 +22,7 @@ class DetailActivity : AppCompatActivity() {
     }
     private lateinit var post: Post
     private var isChanged = false
+
 
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {

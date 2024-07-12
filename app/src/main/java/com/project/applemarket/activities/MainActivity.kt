@@ -22,10 +22,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.view.ScrollingView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
 import com.project.applemarket.data.MyData
@@ -49,6 +51,10 @@ class MainActivity : AppCompatActivity() {
             showBackButtonDialog()
         }
     }
+    private val recyclerView: RecyclerView by lazy {
+        binding.postRv
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val activityResultLauncher = registerForActivityResult(
         StartActivityForResult()
@@ -99,8 +105,12 @@ class MainActivity : AppCompatActivity() {
             sendNotification()
         }
 
+        binding.floatingButton.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+        }
 
-        with(binding.postRv) {
+
+        with(recyclerView) {
             adapter = PostAdapter(postList).apply {
                 setOnClickListener(object : PostAdapter.ClickListener {
                     override fun onPostClick(position: Int) {
