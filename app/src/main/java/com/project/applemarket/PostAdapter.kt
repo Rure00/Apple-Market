@@ -55,6 +55,7 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
                     it.isSelected = !it.isSelected
                     Log.d("PostAdapter", "isSelected: $isSelected")
                     clickListener.onHeartClick(it.isSelected, position)
+                    text = post.interest.toString()
                 }
             }
 

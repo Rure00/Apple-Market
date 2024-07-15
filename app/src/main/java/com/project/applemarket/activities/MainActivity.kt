@@ -122,11 +122,9 @@ class MainActivity : AppCompatActivity() {
                         if(isSelected) {
                             postList[position].interest++
                             MyData.interests.add(postList[position])
-                            notifyItemChanged(position)
                         } else {
                             postList[position].interest--
                             MyData.interests.remove(postList[position])
-                            notifyItemChanged(position)
                         }
                     }
                     override fun onChatClick() {
