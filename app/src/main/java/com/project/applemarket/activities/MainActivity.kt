@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private val channelId = "0"
 
+    private val postList = Sample.postList.toMutableList()
+
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             showBackButtonDialog()
@@ -67,13 +69,15 @@ class MainActivity : AppCompatActivity() {
 
             val post = data!!.getParcelableExtra("POST", Post::class.java)
             val isChanged = data.getBooleanExtra("IsChanged", false)
+            val index = data.getIntExtra("INDEX", -1)
             Log.d("MainActivity", "isChanged: $isChanged")
             if (isChanged) {
-                binding.postRv.adapter!!.notifyItemChanged(postList.indexOf(post))
+                postList[index] = post!!
+                Log.d("MainActivity", "index: $index")
+                binding.postRv.adapter!!.notifyItemChanged(index)
             }
         }
     }
-
 
     private val postList = Sample.postList.toMutableList()
 
@@ -119,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d("PostAdapter", "position: $position")
                         val toDetailActivity = Intent(this@MainActivity, DetailActivity::class.java).apply {
                             putExtra("POST", postList[position])
+                            putExtra("INDEX", position)
                         }
 
                         activityResultLauncher.launch(toDetailActivity)
@@ -126,8 +131,10 @@ class MainActivity : AppCompatActivity() {
                     override fun onHeartClick(isSelected: Boolean, position: Int) {
                         Log.d("PostAdapter", "on Heart Click...")
                         if(isSelected) {
+                            postList[position].interest++
                             MyData.interests.add(postList[position])
                         } else {
+                            postList[position].interest--
                             MyData.interests.remove(postList[position])
                         }
                     }
