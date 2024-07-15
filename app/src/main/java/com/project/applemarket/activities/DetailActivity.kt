@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.snackbar.Snackbar
 import com.project.applemarket.R
 import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Post
@@ -18,17 +19,27 @@ import com.project.applemarket.databinding.ActivityDetailBinding
 import com.project.applemarket.databinding.ActivityMainBinding
 import kotlin.reflect.KClass
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class DetailActivity : AppCompatActivity() {
     private val binding: ActivityDetailBinding by lazy {
          ActivityDetailBinding.inflate(layoutInflater)
     }
-    private lateinit var post: Post
+    private val post: Post by lazy {
+        intent.getParcelableExtra("POST", Post::class.java)!!
+    }
+    private val index: Int by lazy {
+        intent.getIntExtra("INDEX", -1).also {
+            if (it == -1) throw Exception("Index was not put")
+        }
+    }
     private var isChanged = false
 
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@DetailActivity, MainActivity::class.java).apply {
+                //TODO: Change tag to Resource of string.xml
                 putExtra("POST", post)
+                putExtra("INDEX", index)
                 putExtra("IsChanged", isChanged)
             }
 
@@ -51,8 +62,7 @@ class DetailActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(backPressedCallback)
 
-        //TODO: Change tag to Resource of string.xml
-        post = intent.getParcelableExtra("POST", Post::class.java)!!
+
 
         with(binding) {
             itemImage.setImageResource(post.item.image)
@@ -63,16 +73,6 @@ class DetailActivity : AppCompatActivity() {
             titleText.text = post.title
             bodyText.text = post.body
 
-            heartButton.setOnClickListener {
-                isChanged = !isChanged
-                it.isSelected = !it.isSelected
-
-                if(it.isSelected) {
-                    MyData.interests.add(post)
-                } else {
-                    MyData.interests.remove(post)
-                }
-            }
             if(MyData.interests.contains(post)) {
                 heartButton.isSelected = true
             }
@@ -81,6 +81,19 @@ class DetailActivity : AppCompatActivity() {
                 else it
             }.joinToString("").reversed() + "원"
 
+            heartButton.setOnClickListener {
+                isChanged = !isChanged
+                it.isSelected = !it.isSelected
+
+                if(it.isSelected) {
+                    MyData.interests.add(post)
+                    post.interest++
+                    Snackbar.make(heartButton, "관심 목록에 추가되었습니다.", Snackbar.LENGTH_SHORT).show()
+                } else {
+                    MyData.interests.remove(post)
+                    post.interest--
+                }
+            }
             chatButton.setOnClickListener {
                 Log.d("DetailActivity", "On Chat Button Clicked...")
             }

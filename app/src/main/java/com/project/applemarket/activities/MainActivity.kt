@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private val channelId = "0"
 
+    private val postList = Sample.postList.toMutableList()
+
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             showBackButtonDialog()
@@ -58,15 +60,18 @@ class MainActivity : AppCompatActivity() {
 
             val post = data!!.getParcelableExtra("POST", Post::class.java)
             val isChanged = data.getBooleanExtra("IsChanged", false)
+            val index = data.getIntExtra("INDEX", -1)
             Log.d("MainActivity", "isChanged: $isChanged")
             if (isChanged) {
-                binding.postRv.adapter!!.notifyItemChanged(postList.indexOf(post))
+                postList[index] = post!!
+                Log.d("MainActivity", "index: $index")
+                binding.postRv.adapter!!.notifyItemChanged(index)
             }
         }
     }
 
 
-    private val postList = Sample.postList
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,6 +112,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d("PostAdapter", "on Post Click...")
                         val toDetailActivity = Intent(this@MainActivity, DetailActivity::class.java).apply {
                             putExtra("POST", postList[position])
+                            putExtra("INDEX", position)
                         }
 
                         activityResultLauncher.launch(toDetailActivity)

@@ -1,6 +1,7 @@
 package com.project.applemarket
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -47,9 +48,11 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
             with(heart) {
                 text = post.interest.toString()
                 if(MyData.interests.contains(postList[position])) {
+                    Log.d("PostAdapter", "this item is in the interests")
                     isSelected = true
                 }
                 setOnClickListener {
+                    Log.d("PostAdapter", "this item is Not in the interests")
                     it.isSelected = !it.isSelected
                     clickListener.onHeartClick(it.isSelected, position)
                 }
