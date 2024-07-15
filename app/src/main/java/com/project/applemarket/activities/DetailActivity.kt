@@ -16,8 +16,6 @@ import com.project.applemarket.R
 import com.project.applemarket.data.MyData
 import com.project.applemarket.data.Post
 import com.project.applemarket.databinding.ActivityDetailBinding
-import com.project.applemarket.databinding.ActivityMainBinding
-import kotlin.reflect.KClass
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class DetailActivity : AppCompatActivity() {
@@ -33,6 +31,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
     private var isChanged = false
+
 
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {

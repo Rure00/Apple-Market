@@ -64,9 +64,12 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
             chat.setOnClickListener {
                 clickListener.onChatClick()
             }
-
             binding.root.setOnClickListener {
                 clickListener.onPostClick(position)
+            }
+            binding.root.setOnLongClickListener {
+                clickListener.onPostLongClick(position)
+                true
             }
         }
     }
@@ -77,5 +80,6 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
         fun onPostClick(position: Int)
         fun onHeartClick(isSelected: Boolean, position: Int)
         fun onChatClick()
+        fun onPostLongClick(position: Int)
     }
 }
