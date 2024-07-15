@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private val postList = Sample.postList
+    private val postList = Sample.postList.toMutableList()
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             adapter = PostAdapter(postList).apply {
                 setOnClickListener(object : PostAdapter.ClickListener {
                     override fun onPostClick(position: Int) {
-                        Log.d("PostAdapter", "on Post Click...")
+                        Log.d("PostAdapter", "position: $position")
                         val toDetailActivity = Intent(this@MainActivity, DetailActivity::class.java).apply {
                             putExtra("POST", postList[position])
                         }
@@ -133,6 +133,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     override fun onChatClick() {
                         Log.d("PostAdapter", "on Chat Click...")
+                    }
+
+                    override fun onPostLongClick(position: Int) {
+                        showDeletePostDialog(position)
                     }
 
                 })
@@ -168,6 +172,31 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton("확인") { dialog, which ->
                 finishAffinity()
                 exitProcess(0)
+            }
+            .setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+            }
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+    private fun showDeletePostDialog(position: Int) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+        builder
+            .setMessage("상품 삭제")
+            .setTitle("상품을 정말로 삭제하시겠습니까?")
+            .setPositiveButton("확인") { dialog, which ->
+                println("position: $position")
+                postList.removeAt(position)
+                with(binding.postRv.adapter!!) {
+                    notifyItemRemoved(position)
+                    notifyItemRangeChanged(position, postList.size)
+                }
+
+
+                postList.forEachIndexed { index, it ->
+                    println("$index: $it")
+                }
             }
             .setNegativeButton("취소") { dialog, which ->
                 dialog.dismiss()
