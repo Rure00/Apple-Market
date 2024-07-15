@@ -10,7 +10,7 @@
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
 
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -138,13 +138,14 @@
 
             <TextView
                 android:id="@+id/title_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 app:layout_constraintTop_toBottomOf="@id/division"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
 
-                android:layout_marginStart="10dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
 
                 android:text="샤넬 탑핸드 가방"
@@ -153,12 +154,14 @@
                 />
             <TextView
                 android:id="@+id/body_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 app:layout_constraintTop_toBottomOf="@id/title_text"
                 app:layout_constraintStart_toStartOf="@id/title_text"
+                app:layout_constraintEnd_toEndOf="parent"
 
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
 
                 android:text="샤넬 트랜디 CC 탑핸들 스몰 램스킨 블랙 금장 플랩백!&#10; &#10;색상 : 블랙&#10;사이즈 : 25.5cm * 17.5cm * 8cm&#10;구성 : 본품더스트&#10;&#10;급하게 돈이 필요해서 팝니다 ㅠ ㅠ"
