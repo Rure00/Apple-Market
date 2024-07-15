@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -26,6 +27,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.project.applemarket.PostAdapter
 import com.project.applemarket.R
 import com.project.applemarket.data.MyData
@@ -49,6 +51,13 @@ class MainActivity : AppCompatActivity() {
             showBackButtonDialog()
         }
     }
+    private val recyclerView: RecyclerView by lazy {
+        binding.postRv
+    }
+    private val linearLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(this@MainActivity)
+    }
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val activityResultLauncher = registerForActivityResult(
         StartActivityForResult()
@@ -99,8 +108,11 @@ class MainActivity : AppCompatActivity() {
             sendNotification()
         }
 
+        binding.floatingButton.setOnClickListener {
+            recyclerView.smoothScrollToPosition(0)
+        }
 
-        with(binding.postRv) {
+        with(recyclerView) {
             adapter = PostAdapter(postList).apply {
                 setOnClickListener(object : PostAdapter.ClickListener {
                     override fun onPostClick(position: Int) {
@@ -125,9 +137,27 @@ class MainActivity : AppCompatActivity() {
 
                 })
             }
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = linearLayoutManager
             addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayout.VERTICAL))
+
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val firstVisibleItem: Int = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+
+                    Log.d("MainActivity", "position: $firstVisibleItem")
+
+                    if (firstVisibleItem == 0) {
+                        binding.floatingButton.visibility = View.INVISIBLE
+                    } else {
+                        binding.floatingButton.visibility = View.VISIBLE
+                    }
+                }
+            })
         }
+
+
     }
 
     private fun showBackButtonDialog() {
