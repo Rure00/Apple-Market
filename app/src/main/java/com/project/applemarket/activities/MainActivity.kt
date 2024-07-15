@@ -79,8 +79,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val postList = Sample.postList.toMutableList()
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,10 +130,10 @@ class MainActivity : AppCompatActivity() {
                         Log.d("PostAdapter", "on Heart Click...")
                         if(isSelected) {
                             postList[position].interest++
-                            MyData.interests.add(postList[position])
+                            MyData.interestsId.add(postList[position].id)
                         } else {
                             postList[position].interest--
-                            MyData.interests.remove(postList[position])
+                            MyData.interestsId.remove(postList[position].id)
                         }
                     }
                     override fun onChatClick() {

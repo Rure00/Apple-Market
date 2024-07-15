@@ -47,7 +47,7 @@ class PostAdapter(private val postList: List<Post>): RecyclerView.Adapter<PostAd
 
             with(heart) {
                 text = post.interest.toString()
-                if(MyData.interests.contains(postList[position])) {
+                if(MyData.interestsId.contains(postList[position].id)) {
                     isSelected = true
                 }
 

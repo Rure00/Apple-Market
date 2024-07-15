@@ -72,7 +72,7 @@ class DetailActivity : AppCompatActivity() {
             titleText.text = post.title
             bodyText.text = post.body
 
-            if(MyData.interests.contains(post)) {
+            if(MyData.interestsId.contains(post.id)) {
                 heartButton.isSelected = true
             }
             priceText.text = post.price.toString().reversed().mapIndexed { index, it ->
@@ -85,11 +85,11 @@ class DetailActivity : AppCompatActivity() {
                 it.isSelected = !it.isSelected
 
                 if(it.isSelected) {
-                    MyData.interests.add(post)
+                    MyData.interestsId.add(post.id)
                     post.interest++
                     Snackbar.make(heartButton, "관심 목록에 추가되었습니다.", Snackbar.LENGTH_SHORT).show()
                 } else {
-                    MyData.interests.remove(post)
+                    MyData.interestsId.remove(post.id)
                     post.interest--
                 }
             }
