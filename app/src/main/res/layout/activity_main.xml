@@ -5,15 +5,85 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity"
+    >
 
-    <TextView
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/region_select_button"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+
+        android:paddingTop="7dp"
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        android:background="@drawable/drop_down"
+        >
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:hint="지역"
+        android:textColorHint="@drawable/hint_selector"
+        android:maxLength="6"
+
+        android:inputType="none"
+        android:background="#00000000"
+        />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    <ImageButton
+        android:id="@+id/notification_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+
+        android:contentDescription=""
+
+        app:layout_constraintTop_toTopOf="@id/region_select_button"
+        app:layout_constraintBottom_toBottomOf="@id/region_select_button"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:layout_marginEnd="10dp"
+
+        android:src="@drawable/notification_img"
+        android:background="@android:color/transparent"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/post_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintTop_toBottomOf="@id/region_select_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:background="@android:color/transparent"
+        android:layout_marginTop="10dp"
+        />
+
+    <ImageView
+        android:id="@+id/floating_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+        android:contentDescription="TODO"
+
+        android:src="@drawable/go_to_top"
+        android:background="@drawable/floating_button"
+
+        android:padding="10dp"
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
